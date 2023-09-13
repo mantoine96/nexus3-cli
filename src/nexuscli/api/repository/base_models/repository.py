@@ -6,7 +6,7 @@ import warnings
 from typing import Dict, Iterator, Optional
 
 import semver
-from clint.textui import progress  # TODO: move to CLI
+from click import progressbar
 
 from nexuscli.api.repository.base_models import base_repository, util
 from nexuscli import exception, nexus_util
@@ -248,21 +248,20 @@ class Repository(base_repository.BaseRepository):
         delete_count = 0
         death_row = self.list_raw(repository_path)
 
-        death_row = progress.bar([a for a in death_row], label='Deleting')
+        with progressbar([a for a in death_row], label='Deleting') as death_row:
+            for artefact in death_row:
+                id_ = artefact['id']
+                artefact_path = artefact['path']
 
-        for artefact in death_row:
-            id_ = artefact['id']
-            artefact_path = artefact['path']
-
-            response = self._client.delete(f'assets/{id_}')
-            LOG.info('Deleted: %s (%s)', artefact_path, id_)
-            delete_count += 1
-            if response.status_code == 404:
-                LOG.warning('File disappeared while deleting')
-                LOG.debug(response.reason)
-            elif response.status_code != 204:
-                LOG.error(response.reason)
-                return -1
+                response = self._client.delete(f'assets/{id_}')
+                LOG.info('Deleted: %s (%s)', artefact_path, id_)
+                delete_count += 1
+                if response.status_code == 404:
+                    LOG.warning('File disappeared while deleting')
+                    LOG.debug(response.reason)
+                elif response.status_code != 204:
+                    LOG.error(response.reason)
+                    return -1
 
         return delete_count
 
@@ -340,27 +339,27 @@ class Repository(base_repository.BaseRepository):
 
         artefacts = self.list_raw(source)
 
-        artefacts = progress.bar(
-                [a for a in artefacts], label='Downloading')
+        with progressbar([a for a in artefacts], label='Downloading') as artefacts:
+            for artefact in artefacts:
+                download_url = artefact['downloadUrl']
+                artefact_path = artefact['path']
+                LOG.debug('Downloading [%s] to [%s] from [%s], flatten=%s',
+                          artefact_path, destination, download_url, flatten)
+                download_path = nexus_util.remote_path_to_local(
+                    artefact_path, destination, flatten
+                )
 
-        for artefact in artefacts:
-            download_url = artefact['downloadUrl']
-            artefact_path = artefact['path']
-            LOG.debug('Downloading [%s] to [%s] from [%s], flatten=%s',
-                      artefact_path, destination, download_url, flatten)
-            download_path = nexus_util.remote_path_to_local(artefact_path, destination, flatten)
+                if self._should_skip_download(
+                        download_url, download_path, artefact, nocache):
+                    download_count += 1
+                    continue
 
-            if self._should_skip_download(
-                    download_url, download_path, artefact, nocache):
-                download_count += 1
-                continue
-
-            try:
-                self.download_file(download_url, download_path)
-                download_count += 1
-            except exception.DownloadError:
-                LOG.warning('Error downloading %s', download_url)
-                continue
+                try:
+                    self.download_file(download_url, download_path)
+                    download_count += 1
+                except exception.DownloadError:
+                    LOG.warning('Error downloading %s', download_url)
+                    continue
 
         return download_count
 
@@ -423,15 +422,14 @@ class Repository(base_repository.BaseRepository):
         destination = pathlib.Path(destination)
         file_set = util.get_files(source, recurse)
         expected_upload_count = len(file_set)
-        file_set = progress.bar(file_set, expected_size=expected_upload_count)
-
         upload_count = 0
-        for source_file in file_set:
-            dst_path = self._upload_dst_path(source, source_file, destination, flatten)
-            LOG.debug('Uploading [%s] to [%s] in repository=%s, flatten=%s',
-                      source_file, dst_path, self.name, flatten)
-            self.upload_file(source_file, dst_path)
-            upload_count += 1
+        with progressbar(file_set, length=expected_upload_count) as file_set:
+            for source_file in file_set:
+                dst_path = self._upload_dst_path(source, source_file, destination, flatten)
+                LOG.debug('Uploading [%s] to [%s] in repository=%s, flatten=%s',
+                          source_file, dst_path, self.name, flatten)
+                self.upload_file(source_file, dst_path)
+                upload_count += 1
 
         if expected_upload_count != upload_count:
             warnings.warn(f'expected {expected_upload_count} to upload but got {upload_count}')

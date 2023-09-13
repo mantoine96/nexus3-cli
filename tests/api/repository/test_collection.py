@@ -99,6 +99,7 @@ def test_get_raw_by_name(x_configuration, nexus_client):
 
     if added or removed or modified:
         print(
+            f'configuration: {pformat(configuration)}\n'
             f'added: {pformat(added)}\n'
             f'removed: {pformat(removed)}\n'
             f'modified: {pformat(modified)}\n')

@@ -1,15 +1,16 @@
 {
-  "repositoryName": "maven-snapshots",
-  "recipeName": "maven2-hosted",
   "attributes": {
     "maven": {
-      "versionPolicy": "SNAPSHOT",
-      "layoutPolicy": "STRICT"
+      "contentDisposition": "INLINE",
+      "layoutPolicy": "STRICT",
+      "versionPolicy": "SNAPSHOT"
     },
     "storage": {
-      "writePolicy": "ALLOW",
+      "blobStoreName": "default",
       "strictContentTypeValidation": false,
-      "blobStoreName": "default"
+      "writePolicy": "ALLOW"
     }
-  }
+  },
+  "recipeName": "maven2-hosted",
+  "repositoryName": "maven-snapshots"
 }

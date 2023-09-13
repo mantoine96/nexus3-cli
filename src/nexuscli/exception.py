@@ -70,9 +70,9 @@ def _raise_if_error_is_mapped(nexus_message_bytes):
         return
 
     try:
-        result = nexus_response['result']
+        result = nexus_response['message']
     except KeyError:
-        raise TypeError('Unrecognised Nexus error response') from None
+        raise TypeError(f'Unrecognised Nexus error response: {nexus_response}') from None
 
     _lookup_and_raise(result)
 
