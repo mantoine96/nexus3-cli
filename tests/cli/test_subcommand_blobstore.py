@@ -47,4 +47,4 @@ class TestBlobstore:
         error_result = cli_runner.invoke(nexus_cli, cmd)
 
         assert result.exit_code == exception.CliReturnCode.SUCCESS.value
-        assert error_result.output == 'Error: "Unable to find blobstore"\n'
+        assert "Unable to find blobstore" in error_result.output

@@ -8,7 +8,6 @@ package_version = '4.1.8'
 requires = [
     'click>=8.0.1,<9',
     'click_aliases>=1.0.1,<2',
-    'clint>=0.5.1,<1',
     'inflect>=5.3.0,<6',
     'requests[security]>=2.14.2,<3',
     'semver>=2.10.1,<3',
