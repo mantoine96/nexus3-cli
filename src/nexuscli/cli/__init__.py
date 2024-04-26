@@ -174,8 +174,10 @@ def _create_repository(ctx, repo_type, **kwargs) -> None:
             repository_model.PypiGroupRepository.RECIPE_NAME,
             repository_model.RawGroupRepository.RECIPE_NAME,
             repository_model.RubygemsGroupRepository.RECIPE_NAME,
-            repository_model.YumGroupRepository.RECIPE_NAME,
         ],
+        'yum': [
+            repository_model.YumGroupRepository.RECIPE_NAME,
+        ]
     }))
 def repository_create_group():
     """Create a group repository."""
@@ -183,15 +185,23 @@ def repository_create_group():
 
 
 @repository_create_group.command(name='recipe')  # type: ignore
-@util.add_options(repository_options.COMMON)
-@click.option('--member-names', '-m', multiple=True, help='Repository name(s) to add to group. '
-                                                          'Use once per member. E.g.: `-m name-a '
-                                                          '-m name-b`.')
+@util.add_options(repository_options.GROUP)
 @util.with_nexus_client
 def repository_create_group_recipe(ctx: click.Context, **kwargs):
     """Create group repository NAME."""
     _create_repository(ctx, 'group', **kwargs)
 
+@repository_create_group.command(name='yum')  # type: ignore
+@util.add_options(repository_options.GROUP)
+@click.option(
+    '--gpg-keypair', type=click.File(), help='Path to GPG signing key')
+@click.option('--passphrase', help='Passphrase for GPG key pair', type=str)
+@util.with_nexus_client
+def repository_create_group_yum(ctx: click.Context, **kwargs):
+    """Create a hosted yum, repository."""
+    if kwargs['gpg_keypair']:
+        kwargs['gpg_keypair'] = kwargs['gpg_keypair'].read()
+    _create_repository(ctx, 'group', **kwargs)
 
 #############################################################################
 # repository create hosted sub-commands

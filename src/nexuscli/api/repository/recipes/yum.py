@@ -75,4 +75,23 @@ class YumProxyRepository(ProxyRepository, _YumRepository):
 
 class YumGroupRepository(GroupRepository, _YumRepository):
     def __init__(self, *args, **kwargs):
-        raise exception.FeatureNotImplemented
+        self.gpg_keypair: Optional[str] = kwargs.get('gpg_keypair')
+        self.passphrase: Optional[str] = kwargs.get('passphrase')
+        super().__init__(*args, **kwargs)
+    
+    @property
+    def configuration(self):
+        """
+        As per :py:obj:`Repository.configuration` but specific to this
+        repository recipe and type.
+
+        :rtype: str
+        """
+        repo_config = super().configuration
+        repo_config['attributes'].update({
+            'yumSigning': {
+                'keypair': self.gpg_keypair,
+                'passphrase': self.passphrase
+            }
+        })
+        return repo_config
