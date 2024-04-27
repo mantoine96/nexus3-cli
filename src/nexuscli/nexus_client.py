@@ -37,8 +37,9 @@ class NexusClient:
         self._tasks: Optional[TaskCollection] = None
 
     def create_scripts(self, scripts: List[str]) -> None:
-        for script_name in scripts:
-            self.scripts.create_if_missing(script_name)
+        if self.http.config.groovy_enabled:
+            for script_name in scripts:
+                self.scripts.create_if_missing(script_name)
 
     @property
     def blobstores(self) -> BlobstoreCollection:
