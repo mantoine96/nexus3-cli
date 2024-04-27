@@ -1,8 +1,10 @@
 Command-line Interface
 ======================
 
-Before using the CLI, you need to run `nexus3 login <#nexus3-login>`_ to create the client
-configuration.
+Before using the CLI, you need to run `nexus3 login <#nexus3-login>`_ to enter
+the Nexus endpoint and user credentials, which will be persisted in cleartext
+dotfiles. Alternatively, you may use environment variables as below.
+
 
 Environment Variables
 ---------------------
@@ -24,8 +26,8 @@ The client logging level can be configured by setting an environment variable na
 Commands
 --------
 
-After installing the ``nexus3-cli`` python package, the ``nexus3`` executable will be available on
-your command line. It accepts several different commands.
+After installing the ``nexus3-cli`` Python package, the ``nexus3`` command  will be available to
+your shell. It accepts several different commands.
 
 .. click:: nexuscli.cli:nexus_cli
    :prog: nexus3
