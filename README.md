@@ -5,7 +5,7 @@ OSS 3](https://www.sonatype.com/download-oss-sonatype).
 
 ## Features
 
-1. Compatible with [Nexus 3 OSS](https://www.sonatype.com/download-oss-sonatype)
+1. Compatible with [Nexus 3 OSS](https://www.sonatype.com/download-oss-sonatype). It may work with the commercial release, but it's untested.
    1. [Nexus versions tested](https://gitlab.com/thiagocsf/nexus3-cli/-/blob/master/.gitlab-ci.yml#L103-116)
 1. Python API and command-line support.
 1. Artefact management: list, delete, bulk upload and download.
@@ -21,7 +21,7 @@ OSS 3](https://www.sonatype.com/download-oss-sonatype).
 1. Blob store management: list, show, create, delete, update (API only).
 
 The actions above are performed using the Nexus REST API if the endpoint is
-available, otherwise a groovy script is used.
+available, otherwise a Groovy script is used.
 
 Please note that some Nexus 3 features are not currently supported. Assistance
 implementing missing support is very welcome. Please have a look at the
@@ -30,13 +30,13 @@ and [contribution guidelines](https://gitlab.com/thiagocsf/nexus3-cli/-/blob/mas
 
 ## Installation
 
-The nexus3-cli package is available on PyPi. You can install using pip/pip3:
+The `nexus3-cli` package is available on PyPi. You can install using `pip` / `pip3`:
 
 ```bash
 pip install nexus3-cli
 ```
 
-There's also a [docker image with nexus3-cli 
+There's also a [Docker image with `nexus3-cli` 
 pre-installed](https://gitlab.com/thiagocsf/docker-nexus3-cli).
 
 ### Enable Groovy scripts
@@ -48,7 +48,7 @@ script execution in your instance.
 See the [FAQ in this blog post](https://support.sonatype.com/hc/en-us/articles/360045220393-Scripting-Nexus-Repository-Manager-3)
 and the [example `nexus.properties`](https://gitlab.com/thiagocsf/nexus3-cli/-/blob/master/tests/fixtures/nexus-data/etc/nexus.properties) in this project.
 
-If you decide to leave groovy scripts disabled in your Nexus 3 instance, you need to disable its
+If you decide to leave Groovy scripts disabled in your Nexus 3 instance, you need to disable its
 use in this client. This can be done by editing the `~/.nexus-cli` configuration and changing
 `groovy_enabled` to `false`. Alternatively, you can export the `NEXUS3_GROOVY_ENABLED=false`
 environment variable.
@@ -63,19 +63,19 @@ For a quick start, use the [sonatype/nexus3 Docker image](https://hub.docker.com
 docker run -d --rm -p 127.0.0.1:8081:8081 --name nexus sonatype/nexus3
 ```
 
-Nexus will take a little while to start-up the first time you run it. You can
+This container will take a while to start the first time you run it. You can
 tell when it's available by looking at the Docker instance logs or browsing to
 [http://localhost:8081](http://localhost:8081).
 
-On older versions of the nexus3 Docker image, the default `admin` password is
+On older versions of the `nexus3` Docker image, the default `admin` password is
 `admin123`; on newer versions it's automatically generated and you can find it
 by running `docker exec nexus cat /nexus-data/admin.password`.
 
 The `login` command will store the service URL and your credentials in
 `~/.nexus-cli` (warning: restrictive file permissions are set but the contents
-are saved in plain-text).
+are saved in cleartext).
 
-Setup CLI credentials:
+Set up credentials:
 
 ```bash
 $ nexus3 login
@@ -86,6 +86,10 @@ Verify server certificate (True):
 
 Configuration saved to /Users/thiago/.nexus-cli
 ```
+
+Alternatively, you can define environment variables ``NEXUS3_PASSWORD``, ``NEXUS3_USERNAME``, ``NEXUS3_URL``, ``NEXUS3_API_VERSION``, and ``NEXUS3_X509_VERIFY``.
+
+
 
 List repositories:
 
@@ -118,7 +122,7 @@ Uploading some/ to reponame/path/
 Uploaded 2 files to reponame/path/
 ```
 
-Nota Bene: nexus3-cli interprets a path ending in `/` as a directory.
+Nota Bene: `nexus3-cli` interprets a path ending in `/` as a directory.
 
 List repository contents:
 
@@ -128,7 +132,7 @@ path/some/deep/test/path/other.txt
 path/some/deep/test/file.txt
 ```
 
-For all commands, subcommands and options, run `nexus3 -h`.
+For a usage message for commands, subcommands and options, run `nexus3 -h`.
 [CLI documentation](https://nexus3-cli.readthedocs.io/en/latest/cli.html)
 
 ### API
@@ -146,7 +150,7 @@ pip install [--user] pytest faker
 pytest -m 'not integration'
 ```
 
-Integration tests require a local Nexus instance listening on 8081 or as
+Integration tests require a local Nexus instance listening on 8081/tcp or as
 configured in `~/.nexus-cli`. The configuration file can be created using
 [nexus3 login](https://nexus3-cli.readthedocs.io/en/latest/cli.html#nexus3-login).
 
