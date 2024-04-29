@@ -191,6 +191,7 @@ def repository_create_group_recipe(ctx: click.Context, **kwargs):
     """Create group repository NAME."""
     _create_repository(ctx, 'group', **kwargs)
 
+
 @repository_create_group.command(name='yum')  # type: ignore
 @util.add_options(repository_options.GROUP)
 @click.option(
@@ -202,6 +203,7 @@ def repository_create_group_yum(ctx: click.Context, **kwargs):
     if kwargs['gpg_keypair']:
         kwargs['gpg_keypair'] = kwargs['gpg_keypair'].read()
     _create_repository(ctx, 'group', **kwargs)
+
 
 #############################################################################
 # repository create hosted sub-commands

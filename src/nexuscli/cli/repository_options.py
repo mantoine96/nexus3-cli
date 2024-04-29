@@ -17,8 +17,8 @@ COMMON = [
 
 GROUP = COMMON + [
     click.option('--member-names', '-m', multiple=True, help='Repository name(s) to add to group. '
-                                                          'Use once per member. E.g.: `-m name-a '
-                                                          '-m name-b`.')
+                 'Use once per member. E.g.: `-m name-a '
+                 '-m name-b`.')
 ]
 
 HOSTED = COMMON + CLEANUP + [

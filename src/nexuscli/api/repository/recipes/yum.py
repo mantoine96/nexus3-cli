@@ -1,3 +1,5 @@
+from typing import Optional
+
 from nexuscli import exception, nexus_util
 from nexuscli.api.repository.base_models import Repository
 from nexuscli.api.repository.base_models import HostedRepository
@@ -78,7 +80,7 @@ class YumGroupRepository(GroupRepository, _YumRepository):
         self.gpg_keypair: Optional[str] = kwargs.get('gpg_keypair')
         self.passphrase: Optional[str] = kwargs.get('passphrase')
         super().__init__(*args, **kwargs)
-    
+
     @property
     def configuration(self):
         """
