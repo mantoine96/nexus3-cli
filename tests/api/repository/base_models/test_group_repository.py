@@ -9,7 +9,7 @@ def test_configuration(class_, nexus_mock_http, faker):
     """Ensure the property returns the attributes required by Nexus"""
     x_member_names = faker.pylist(10, True, [str])
 
-    if class_.RECIPE_NAME in ['docker', 'maven', 'yum']:
+    if class_.RECIPE_NAME in ['docker', 'maven']:
         with pytest.raises(exception.FeatureNotImplemented):
             class_(name='dummy', member_names=x_member_names)
     else:
