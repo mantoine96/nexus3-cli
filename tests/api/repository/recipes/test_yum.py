@@ -1,5 +1,5 @@
 import pytest
-from nexuscli.api.repository.model import YumGroupRepository, YumHostedRepository, YumProxyRepository
+from nexuscli.api.repository.model import YumHostedRepository, YumProxyRepository
 
 
 def test_upload_error(upload_file_ensure_raises_api_error):
